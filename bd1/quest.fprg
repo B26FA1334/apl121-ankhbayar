@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<flowgorithm fileversion="4.2">
+    <attributes>
+        <attribute name="name" value="quest"/>
+        <attribute name="authors" value="dell"/>
+        <attribute name="about" value=""/>
+        <attribute name="saved" value="2026-10-28 04:53:39 PM"/>
+        <attribute name="created" value="ZGVsbDtERVNLVE9QLVNVVTg3NkE7MjAyNi0xMC0yODswMjoyMjoxMCBQTTsyNzU1"/>
+        <attribute name="edited" value="ZGVsbDtERVNLVE9QLVNVVTg3NkE7MjAyNi0xMC0yODswNDo1MzozOSBQTTs2OzI4ODU="/>
+    </attributes>
+    <function name="Main" type="None" variable="">
+        <parameters/>
+        <body>
+            <declare name="n, i, rank, best, failCount, totalCredit" type="Integer" array="False" size=""/>
+            <declare name="weighted, gpa, p" type="Real" array="False" size=""/>
+            <declare name="L" type="String" array="False" size=""/>
+            <declare name="name, grade" type="String" array="True" size="8"/>
+            <declare name="score, pts" type="Real" array="True" size="8"/>
+            <declare name="credit, used" type="Integer" array="True" size="8"/>
+            <declare name="maxScore" type="Real" array="False" size=""/>
+            <assign variable="failCount" expression="0"/>
+            <assign variable="totalCredit" expression="0"/>
+            <assign variable="weighted" expression="0"/>
+            <assign variable="p" expression="0"/>
+            <assign variable="L" expression="&quot;&quot;"/>
+            <for variable="i" start="0" end="7" direction="inc" step="1">
+                <assign variable="used[i]" expression="0"/>
+            </for>
+            <do expression="n &lt; 3 || n &gt; 8">
+                <output expression="&quot;Number of courses (3-8): &quot;" newline="True"/>
+                <input variable="n"/>
+                <if expression="n &lt; 3 || n &gt; 8">
+                    <then>
+                        <output expression="&quot;Invalid! Enter 3-8.&quot;" newline="True"/>
+                    </then>
+                    <else/>
+                </if>
+            </do>
+            <for variable="i" start="0" end="n - 1" direction="inc" step="1">
+                <output expression="&quot;Course name: &quot;" newline="True"/>
+                <input variable="name[i]"/>
+                <do expression="credit[i] &lt; 1 || credit[i] &gt; 6">
+                    <output expression="&quot;Credit (1-6): &quot;" newline="True"/>
+                    <input variable="credit[i]"/>
+                    <if expression="credit[i] &lt; 1 || credit[i] &gt; 6">
+                        <then>
+                            <output expression="&quot;Invalid! Enter 1-6.&quot;" newline="True"/>
+                        </then>
+                        <else/>
+                    </if>
+                </do>
+                <do expression="score[i] &lt; 0 || score[i] &gt; 100">
+                    <output expression="&quot;Score (0-100): &quot;" newline="True"/>
+                    <input variable="score[i]"/>
+                    <if expression="score[i] &lt; 0 || score[i] &gt; 100">
+                        <then>
+                            <output expression="&quot;Invalid! Enter 0-100.&quot;" newline="True"/>
+                        </then>
+                        <else/>
+                    </if>
+                </do>
+                <call expression="GradeInfo(score[i], pts, grade, i)"/>
+                <assign variable="p" expression="pts[i]"/>
+                <assign variable="L" expression="grade[i]"/>
+                <assign variable="weighted" expression="weighted + p * credit[i]"/>
+                <assign variable="totalCredit" expression="totalCredit + credit[i]"/>
+                <if expression="L == &quot;F&quot;">
+                    <then>
+                        <assign variable="failcount" expression="failCount + 1"/>
+                    </then>
+                    <else/>
+                </if>
+            </for>
+            <assign variable="gpa" expression="weighted / totalCredit"/>
+            <output expression="&quot;No Course Score Grade Credit&quot;" newline="True"/>
+            <for variable="i" start="0" end="n - 1" direction="inc" step="1">
+                <output expression="(i + 1) &amp; &quot;  &quot; &amp; name[i] &amp; &quot;  &quot; &amp; score[i] &amp; &quot;  &quot; &amp; grade[i] &amp; &quot;  &quot; &amp; credit[i]" newline="True"/>
+            </for>
+            <output expression="&quot;Total credit: &quot; &amp; totalCredit" newline="True"/>
+            <output expression="&quot;GPA: &quot; &amp; gpa" newline="True"/>
+            <if expression="gpa &gt;= 3.5 &amp;&amp; failCount == 0">
+                <then>
+                    <output expression="&quot;Honors student&quot;" newline="True"/>
+                </then>
+                <else>
+                    <output expression="&quot;Normal&quot;" newline="True"/>
+                </else>
+            </if>
+            <output expression="&quot;Top 3 scores:&quot;" newline="True"/>
+            <for variable="rank" start="1" end="3" direction="inc" step="1">
+                <assign variable="best" expression="-1"/>
+                <assign variable="maxScore" expression="-1"/>
+                <for variable="i" start="0" end="n - 1" direction="inc" step="1">
+                    <if expression="used[i] == 0 &amp;&amp; score[i] &gt; maxScore">
+                        <then>
+                            <assign variable="maxScore" expression="score[i]"/>
+                            <assign variable="best" expression="i"/>
+                        </then>
+                        <else/>
+                    </if>
+                </for>
+                <assign variable="used[best]" expression="1"/>
+                <output expression="rank &amp; &quot;. &quot; &amp; name[best] &amp; &quot; &quot; &amp; score[best]" newline="True"/>
+            </for>
+        </body>
+    </function>
+    <function name="GradeInfo" type="None" variable="">
+        <parameters>
+            <parameter name="Score" type="Real" array="False"/>
+            <parameter name="points" type="Real" array="True"/>
+            <parameter name="grade" type="String" array="True"/>
+            <parameter name="k" type="Integer" array="False"/>
+        </parameters>
+        <body>
+            <if expression="Score &gt;= 90">
+                <then>
+                    <assign variable="grade[k]" expression="&quot;A&quot;"/>
+                    <assign variable="pts[k]" expression="4"/>
+                </then>
+                <else>
+                    <if expression="Score &gt;= 80">
+                        <then>
+                            <assign variable="grade[k]" expression="&quot;B&quot;"/>
+                            <assign variable="pts[k]" expression="3"/>
+                        </then>
+                        <else>
+                            <if expression="Score &gt;= 70">
+                                <then>
+                                    <assign variable="grade[k]" expression="&quot;C&quot;"/>
+                                    <assign variable="pts[k]" expression="2"/>
+                                </then>
+                                <else>
+                                    <if expression="Score &gt;= 60">
+                                        <then>
+                                            <assign variable="grade[k]" expression="&quot;D&quot;"/>
+                                            <assign variable="pts[k]" expression="1"/>
+                                        </then>
+                                        <else>
+                                            <assign variable="grade[k]" expression="&quot;F&quot;"/>
+                                            <assign variable="pts[k]" expression="0"/>
+                                        </else>
+                                    </if>
+                                </else>
+                            </if>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </body>
+    </function>
+</flowgorithm>
