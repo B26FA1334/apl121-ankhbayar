@@ -42,4 +42,4 @@ No  Course      Score  Grade Credit
 ```
 
 ## Бичлэг
-<энд YouTube / OneDrive холбоосоо оруулна>
+<https://youtu.be/amw2Y0ZGs28>
